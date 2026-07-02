@@ -155,9 +155,12 @@
               <span style="position:absolute;top:14px;left:14px;background:{{ p.badgeBg }};color:#fff;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.5px;z-index:2;box-shadow:0 4px 10px rgba(0,0,0,.12);">{{ p.badge }}</span>
             </sc-if>
             <div style="height:180px;background:linear-gradient(135deg,{{ p.bg1 }},{{ p.bg2 }});display:flex;align-items:center;justify-content:center;font-size:82px;position:relative;overflow:hidden;">
-              <div style="position:absolute;top:12px;right:12px;font-size:16px;animation:sparkle 3s ease-in-out infinite;">✨</div>
-              <div style="position:absolute;bottom:14px;left:14px;font-size:14px;animation:sparkle 4s ease-in-out infinite .5s;">✨</div>
               <span style="transition:transform .4s;">{{ p.emoji }}</span>
+              <sc-if value="{{ p.img }}" hint-placeholder-val="{{ '' }}">
+                <img src="{{ p.img }}" alt="{{ p.name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;z-index:1;"/>
+              </sc-if>
+              <div style="position:absolute;top:12px;right:12px;font-size:16px;animation:sparkle 3s ease-in-out infinite;z-index:2;">✨</div>
+              <div style="position:absolute;bottom:14px;left:14px;font-size:14px;animation:sparkle 4s ease-in-out infinite .5s;z-index:2;">✨</div>
             </div>
             <div style="padding:20px;">
               <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:#6B3A1E;margin-bottom:4px;">{{ p.name }}</div>
@@ -451,7 +454,7 @@ class Component extends DCLogic {
   };
 
   PRODUCTS = [
-    { id: 'p1', name: 'Choco Chip Classic', desc: 'La clásica cookie con chispas de chocolate', price: '25.000', rating: '4.9', emoji: '🍪', cat: 'Cookies', badge: 'Más vendido', badgeBg: '#F7A6B8', bg1: '#FFF4E5', bg2: '#FFE1E8' },
+    { id: 'p1', name: 'Choco Chip Classic', desc: 'La clásica cookie con chispas de chocolate', price: '25.000', rating: '4.9', emoji: '🍪', img: 'assets/choco-chip-classic.png', cat: 'Cookies', badge: 'Más vendido', badgeBg: '#F7A6B8', bg1: '#FFF4E5', bg2: '#FFE1E8' },
     { id: 'p2', name: 'Cupcake Rosita', desc: 'Cupcake de vainilla con frosting rosa', price: '18.000', rating: '4.8', emoji: '🧁', cat: 'Cupcakes', badge: 'Cute', badgeBg: '#D99A4E', bg1: '#FFE1E8', bg2: '#FFF4E5' },
     { id: 'p3', name: 'Brownie Fudge', desc: 'Brownie húmedo con doble chocolate', price: '22.000', rating: '5.0', emoji: '🍫', cat: 'Brownies', badge: 'Nuevo', badgeBg: '#6B3A1E', bg1: '#FFF4E5', bg2: '#F7A6B8' },
     { id: 'p4', name: 'Torta Confetti', desc: 'Torta esponjosa con sprinkles y crema', price: '95.000', rating: '4.9', emoji: '🎂', cat: 'Tortas', badge: 'Especial', badgeBg: '#F7A6B8', bg1: '#FFE1E8', bg2: '#FFF4E5' },
