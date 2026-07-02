@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', sans-serif; background: #FFFDF8; color: #6B3A1E; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  @keyframes float-cookie { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-24px) rotate(8deg); } }
+  @keyframes float-cookie-alt { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(-10deg); } }
+  @keyframes float-heart { 0% { transform: translateY(0) scale(1); opacity: .7; } 50% { transform: translateY(-30px) scale(1.1); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: .7; } }
+  @keyframes sparkle { 0%,100% { transform: scale(1) rotate(0deg); opacity: .4; } 50% { transform: scale(1.4) rotate(180deg); opacity: 1; } }
+  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes pop-in { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+  @keyframes fly-to-cart { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--fx,200px), var(--fy,-200px)) scale(.2); opacity: 0; } }
+  @keyframes wiggle { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+  @keyframes bounce-in { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise .7s ease both; }
+  ::selection { background: #F7A6B8; color: #fff; }
+</style>
+</helmet>
+
+<div style="background:#FFFDF8;min-height:100vh;position:relative;overflow:hidden;">
+
+  <!-- HEADER -->
+  <header data-screen-label="Header" style="position:sticky;top:0;z-index:100;background:rgba(255,253,248,.92);backdrop-filter:blur(14px);border-bottom:2px solid #FFE1E8;">
+    <div style="max-width:1280px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <a href="#top" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#6B3A1E;">
+        <img src="assets/logo.png" alt="Cookie Store" style="width:52px;height:52px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(215,154,78,.35);"/>
+        <div style="display:flex;flex-direction:column;line-height:1;">
+          <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;color:#6B3A1E;">Cookie Store</span>
+          <span style="font-size:11px;color:#D99A4E;font-weight:600;letter-spacing:1px;margin-top:3px;">DULZURA EN CADA BOCADO</span>
+        </div>
+      </a>
+      <nav style="display:flex;gap:6px;align-items:center;">
+        <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+          <a href="{{ item.href }}" style="padding:10px 16px;border-radius:999px;text-decoration:none;color:#6B3A1E;font-weight:600;font-size:15px;transition:all .2s;" style-hover="{background:'#FFE1E8',color:'#6B3A1E'}">{{ item.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button onClick="{{ openCart }}" style="position:relative;background:#FFF4E5;border:2px solid #FFE1E8;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:22px;" style-hover="{transform:'translateY(-2px)',boxShadow:'0 6px 16px rgba(247,166,184,.35)'}">
+          🛒
+          <sc-if value="{{ cartCount }}" hint-placeholder-val="{{ 0 }}">
+            <span style="position:absolute;top:-6px;right:-6px;background:#F7A6B8;color:#fff;font-size:12px;font-weight:800;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #FFFDF8;animation:pop-in .3s ease;">{{ cartCount }}</span>
+          </sc-if>
+        </button>
+        <a href="{{ waHref }}" target="_blank" style="background:linear-gradient(135deg,#F7A6B8,#f28ea3);color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 6px 18px rgba(247,166,184,.5);transition:all .2s;display:flex;align-items:center;gap:8px;" style-hover="{transform:'translateY(-2px)',boxShadow:'0 10px 24px rgba(247,166,184,.6)'}">
+          <span>💬</span> Hacer pedido
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" data-screen-label="Hero" style="position:relative;padding:80px 32px 100px;overflow:hidden;background:radial-gradient(ellipse at top,#FFE1E8 0%,#FFF4E5 60%,#FFFDF8 100%);">
+    <!-- floating decorations -->
+    <div style="position:absolute;top:14%;left:6%;font-size:52px;animation:float-cookie 6s ease-in-out infinite;">🍪</div>
+    <div style="position:absolute;top:24%;right:8%;font-size:44px;animation:float-cookie-alt 7s ease-in-out infinite;">🧁</div>
+    <div style="position:absolute;bottom:16%;left:12%;font-size:36px;animation:float-cookie 5s ease-in-out infinite .5s;">🍩</div>
+    <div style="position:absolute;top:60%;right:14%;font-size:32px;animation:float-heart 4s ease-in-out infinite;">💗</div>
+    <div style="position:absolute;top:38%;left:20%;font-size:22px;animation:sparkle 3s ease-in-out infinite;">✨</div>
+    <div style="position:absolute;top:70%;right:26%;font-size:24px;animation:sparkle 4s ease-in-out infinite 1s;">✨</div>
+    <div style="position:absolute;top:15%;right:30%;font-size:26px;animation:float-heart 5s ease-in-out infinite .8s;">💕</div>
+
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;position:relative;z-index:1;">
+      <div class="rise">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:700;color:#D99A4E;box-shadow:0 4px 14px rgba(215,154,78,.15);margin-bottom:24px;">
+          <span style="font-size:16px;">🌟</span> Repostería artesanal · Hecho con amor
+        </div>
+        <h1 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:64px;line-height:1.05;color:#6B3A1E;letter-spacing:-1px;margin-bottom:20px;">
+          Endulzá tu día con nuestras <span style="color:#F7A6B8;position:relative;display:inline-block;">cookies más cute<span style="position:absolute;left:0;right:0;bottom:-6px;height:10px;background:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 10%22><path d=%22M0 6 Q50 0 100 6 T200 6%22 fill=%22none%22 stroke=%22%23F7A6B8%22 stroke-width=%223%22 stroke-linecap=%22round%22/></svg>') center/100% 100% no-repeat;"></span></span> 💕
+        </h1>
+        <p style="font-size:19px;line-height:1.55;color:#8a6a55;max-width:520px;margin-bottom:34px;">
+          Repostería artesanal, colorida y hecha con amor. Cookies, cupcakes, brownies y tortas personalizadas para endulzar tus momentos favoritos.
+        </p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="#productos" style="background:linear-gradient(135deg,#F7A6B8,#f28ea3);color:#fff;padding:18px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:16px;box-shadow:0 10px 24px rgba(247,166,184,.5);transition:all .2s;display:inline-flex;align-items:center;gap:10px;" style-hover="{transform:'translateY(-3px)',boxShadow:'0 14px 30px rgba(247,166,184,.6)'}">
+            🍪 Ver productos
+          </a>
+          <a href="{{ waHref }}" target="_blank" style="background:#fff;color:#6B3A1E;padding:18px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:16px;border:2px solid #FFE1E8;transition:all .2s;display:inline-flex;align-items:center;gap:10px;" style-hover="{transform:'translateY(-3px)',borderColor:'#F7A6B8'}">
+            💬 Pedir por WhatsApp
+          </a>
+        </div>
+        <div style="display:flex;gap:32px;margin-top:44px;flex-wrap:wrap;">
+          <div><div style="font-family:'Fredoka',sans-serif;font-size:28px;font-weight:700;color:#6B3A1E;">+2.500</div><div style="font-size:13px;color:#8a6a55;font-weight:600;">Pedidos felices</div></div>
+          <div style="width:1px;background:#FFE1E8;"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-size:28px;font-weight:700;color:#6B3A1E;">4.9★</div><div style="font-size:13px;color:#8a6a55;font-weight:600;">Reseñas dulces</div></div>
+          <div style="width:1px;background:#FFE1E8;"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-size:28px;font-weight:700;color:#6B3A1E;">24h</div><div style="font-size:13px;color:#8a6a55;font-weight:600;">Delivery</div></div>
+        </div>
+      </div>
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#FFE1E8 0%,transparent 70%);animation:spin-slow 40s linear infinite;"></div>
+        <div style="position:relative;width:400px;height:400px;border-radius:50%;background:linear-gradient(135deg,#fff 0%,#FFF4E5 100%);box-shadow:0 30px 60px rgba(215,154,78,.25);display:flex;align-items:center;justify-content:center;animation:float-cookie 6s ease-in-out infinite;">
+          <img src="assets/logo.png" alt="Cookie Store" style="width:92%;height:92%;border-radius:50%;object-fit:cover;"/>
+        </div>
+        <div style="position:absolute;top:-10px;right:20px;background:#fff;padding:12px 18px;border-radius:20px;box-shadow:0 10px 24px rgba(247,166,184,.3);display:flex;align-items:center;gap:10px;animation:float-cookie 5s ease-in-out infinite;">
+          <span style="font-size:24px;">🍫</span>
+          <div><div style="font-size:11px;color:#8a6a55;font-weight:600;">RECIÉN</div><div style="font-size:14px;font-weight:800;color:#6B3A1E;font-family:'Fredoka';">Horneadas</div></div>
+        </div>
+        <div style="position:absolute;bottom:20px;left:-10px;background:#fff;padding:12px 18px;border-radius:20px;box-shadow:0 10px 24px rgba(247,166,184,.3);display:flex;align-items:center;gap:10px;animation:float-cookie-alt 6s ease-in-out infinite .5s;">
+          <span style="font-size:24px;">💗</span>
+          <div><div style="font-size:11px;color:#8a6a55;font-weight:600;">HECHO CON</div><div style="font-size:14px;font-weight:800;color:#6B3A1E;font-family:'Fredoka';">Amor</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section data-screen-label="Categorias" style="padding:70px 32px;background:#FFFDF8;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:44px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">CATEGORÍAS</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">Elegí tu antojo favorito</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:18px;">
+        <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="6">
+          <button onClick="{{ cat.select }}" style="background:{{ cat.bg }};border:3px solid transparent;padding:24px 12px;border-radius:26px;cursor:pointer;text-align:center;transition:all .3s;font-family:inherit;" style-hover="{transform:'translateY(-6px)',borderColor:'#F7A6B8',boxShadow:'0 14px 30px rgba(247,166,184,.25)'}">
+            <div style="font-size:44px;margin-bottom:8px;">{{ cat.emoji }}</div>
+            <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;color:#6B3A1E;">{{ cat.name }}</div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section id="productos" data-screen-label="Productos" style="padding:70px 32px;background:linear-gradient(180deg,#FFFDF8 0%,#FFE1E8 100%);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">MÁS QUERIDOS</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">Productos destacados</h2>
+        <p style="font-size:17px;color:#8a6a55;margin-top:10px;">Cookies frescas y deliciosas, listas para tu antojo</p>
+      </div>
+      <!-- filter chips -->
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:28px 0 40px;">
+        <sc-for list="{{ filterChips }}" as="f" hint-placeholder-count="6">
+          <button onClick="{{ f.select }}" style="padding:10px 20px;border-radius:999px;border:2px solid {{ f.borderColor }};background:{{ f.bgColor }};color:{{ f.textColor }};font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s;" style-hover="{transform:'translateY(-2px)'}">{{ f.name }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+        <sc-for list="{{ filteredProducts }}" as="p" hint-placeholder-count="8">
+          <div style="background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 6px 20px rgba(107,58,30,.08);transition:all .3s;position:relative;" style-hover="{transform:'translateY(-8px)',boxShadow:'0 20px 40px rgba(247,166,184,.3)'}">
+            <sc-if value="{{ p.badge }}" hint-placeholder-val="{{ '' }}">
+              <span style="position:absolute;top:14px;left:14px;background:{{ p.badgeBg }};color:#fff;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.5px;z-index:2;box-shadow:0 4px 10px rgba(0,0,0,.12);">{{ p.badge }}</span>
+            </sc-if>
+            <div style="height:180px;background:linear-gradient(135deg,{{ p.bg1 }},{{ p.bg2 }});display:flex;align-items:center;justify-content:center;font-size:82px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:12px;right:12px;font-size:16px;animation:sparkle 3s ease-in-out infinite;">✨</div>
+              <div style="position:absolute;bottom:14px;left:14px;font-size:14px;animation:sparkle 4s ease-in-out infinite .5s;">✨</div>
+              <span style="transition:transform .4s;">{{ p.emoji }}</span>
+            </div>
+            <div style="padding:20px;">
+              <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:#6B3A1E;margin-bottom:4px;">{{ p.name }}</div>
+              <div style="font-size:13px;color:#8a6a55;line-height:1.4;margin-bottom:14px;min-height:36px;">{{ p.desc }}</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;color:#F7A6B8;">Gs. {{ p.price }}</div>
+                <div style="font-size:12px;color:#D99A4E;font-weight:700;">⭐ {{ p.rating }}</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onClick="{{ p.addToCart }}" style="flex:1;background:#F7A6B8;color:#fff;border:none;padding:12px;border-radius:14px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;" style-hover="{background:'#f28ea3',transform:'translateY(-2px)'}">+ Al carrito</button>
+                <a href="{{ p.waHref }}" target="_blank" style="background:#25D366;color:#fff;text-decoration:none;padding:12px 14px;border-radius:14px;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;" style-hover="{transform:'translateY(-2px)'}">💬</a>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMBOS -->
+  <section data-screen-label="Combos" style="padding:80px 32px;background:#FFE1E8;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:20px;left:8%;font-size:32px;opacity:.3;animation:float-heart 5s ease-in-out infinite;">💗</div>
+    <div style="position:absolute;bottom:30px;right:10%;font-size:38px;opacity:.3;animation:float-heart 6s ease-in-out infinite 1s;">💕</div>
+    <div style="max-width:1200px;margin:0 auto;position:relative;">
+      <div style="text-align:center;margin-bottom:44px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">COMBOS ESPECIALES</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">Packs para compartir 💕</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px;">
+        <sc-for list="{{ combos }}" as="c" hint-placeholder-count="4">
+          <div style="background:#fff;border-radius:32px;padding:28px 22px;text-align:center;box-shadow:0 8px 24px rgba(107,58,30,.1);transition:all .3s;position:relative;overflow:hidden;" style-hover="{transform:'translateY(-8px) rotate(-1deg)',boxShadow:'0 20px 40px rgba(247,166,184,.35)'}">
+            <div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,{{ c.accent }},#F7A6B8);"></div>
+            <div style="width:96px;height:96px;border-radius:50%;background:{{ c.bg }};display:flex;align-items:center;justify-content:center;font-size:52px;margin:0 auto 16px;box-shadow:inset 0 -6px 12px rgba(0,0,0,.05);">{{ c.emoji }}</div>
+            <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;color:#6B3A1E;margin-bottom:6px;">{{ c.name }}</div>
+            <div style="font-size:13px;color:#8a6a55;line-height:1.5;margin-bottom:16px;min-height:56px;">{{ c.desc }}</div>
+            <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:26px;color:#F7A6B8;margin-bottom:16px;">Gs. {{ c.price }}</div>
+            <button onClick="{{ c.addToCart }}" style="width:100%;background:linear-gradient(135deg,#F7A6B8,#f28ea3);color:#fff;border:none;padding:12px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 6px 16px rgba(247,166,184,.4);" style-hover="{transform:'translateY(-2px)'}">Agregar combo</button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONALIZADOS -->
+  <section data-screen-label="Personalizados" style="padding:80px 32px;background:#FFFDF8;">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+      <div style="position:relative;height:440px;border-radius:36px;background:linear-gradient(135deg,#FFE1E8,#FFF4E5);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <div style="font-size:180px;animation:float-cookie 6s ease-in-out infinite;">🎂</div>
+        <div style="position:absolute;top:30px;left:30px;font-size:44px;animation:float-heart 4s ease-in-out infinite;">💗</div>
+        <div style="position:absolute;top:60px;right:40px;font-size:32px;animation:sparkle 3s ease-in-out infinite;">✨</div>
+        <div style="position:absolute;bottom:40px;right:30px;font-size:52px;animation:float-cookie-alt 5s ease-in-out infinite;">🧁</div>
+        <div style="position:absolute;bottom:50px;left:40px;font-size:38px;animation:float-heart 5s ease-in-out infinite .5s;">💕</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">PERSONALIZADOS</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:46px;line-height:1.05;color:#6B3A1E;margin-bottom:20px;">
+          Diseñá tu pedido <span style="color:#F7A6B8;">a tu manera</span>
+        </h2>
+        <p style="font-size:17px;color:#8a6a55;line-height:1.6;margin-bottom:28px;">
+          Cumpleaños, regalos, aniversarios o eventos especiales. Elegí sabores, colores, formas y mensajes. Cada pedido es único y hecho con muchísimo amor.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
+          <sc-for list="{{ personalizadoFeatures }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:10px;background:#FFF4E5;padding:12px 14px;border-radius:16px;">
+              <span style="font-size:22px;">{{ f.icon }}</span>
+              <span style="font-weight:700;font-size:14px;color:#6B3A1E;">{{ f.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <a href="{{ waCustomHref }}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#F7A6B8,#f28ea3);color:#fff;padding:18px 32px;border-radius:999px;text-decoration:none;font-weight:800;font-size:16px;box-shadow:0 10px 24px rgba(247,166,184,.5);transition:all .2s;" style-hover="{transform:'translateY(-3px)'}">
+          ✨ Quiero personalizar mi pedido
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE NOSOTROS -->
+  <section data-screen-label="Sobre" style="padding:80px 32px;background:linear-gradient(180deg,#FFFDF8 0%,#FFF4E5 100%);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:40px;left:5%;font-size:38px;opacity:.3;animation:float-cookie 6s ease-in-out infinite;">🍪</div>
+    <div style="position:absolute;bottom:40px;right:8%;font-size:44px;opacity:.3;animation:float-cookie-alt 7s ease-in-out infinite;">🧁</div>
+    <div style="max-width:820px;margin:0 auto;text-align:center;position:relative;">
+      <div style="width:120px;height:120px;border-radius:50%;background:#fff;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(215,154,78,.25);">
+        <img src="assets/logo.png" alt="Cookie Store" style="width:96%;height:96%;border-radius:50%;object-fit:cover;"/>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">NUESTRA HISTORIA</div>
+      <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;margin-bottom:20px;">Repostería hecha con amor</h2>
+      <p style="font-size:19px;color:#8a6a55;line-height:1.7;">
+        Cookie Store nació de la idea de hacer que cada momento dulce se sienta especial. Somos una repostería artesanal donde horneamos cookies, cupcakes, brownies y tortas con los mejores ingredientes, cuidando cada detalle para que tu pedido llegue tierno, lindo y delicioso. ✨
+      </p>
+      <div style="display:flex;gap:24px;justify-content:center;margin-top:36px;flex-wrap:wrap;">
+        <sc-for list="{{ valores }}" as="v" hint-placeholder-count="4">
+          <div style="background:#fff;padding:20px 26px;border-radius:20px;box-shadow:0 6px 18px rgba(107,58,30,.08);min-width:140px;">
+            <div style="font-size:32px;margin-bottom:6px;">{{ v.icon }}</div>
+            <div style="font-family:'Fredoka';font-weight:600;font-size:15px;color:#6B3A1E;">{{ v.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESO -->
+  <section data-screen-label="Proceso" style="padding:80px 32px;background:#fff;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:50px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">¿CÓMO PEDIR?</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">En 4 pasitos dulces 🍪</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative;">
+        <sc-for list="{{ pasos }}" as="s" hint-placeholder-count="4">
+          <div style="text-align:center;padding:24px 16px;background:{{ s.bg }};border-radius:26px;position:relative;transition:all .3s;" style-hover="{transform:'translateY(-6px)'}">
+            <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:#6B3A1E;color:#fff;font-family:'Fredoka';font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(107,58,30,.3);">{{ s.n }}</div>
+            <div style="font-size:56px;margin:20px 0 12px;animation:wiggle 4s ease-in-out infinite;animation-delay:{{ s.delay }};">{{ s.icon }}</div>
+            <div style="font-family:'Fredoka';font-weight:600;font-size:19px;color:#6B3A1E;margin-bottom:6px;">{{ s.title }}</div>
+            <div style="font-size:14px;color:#8a6a55;line-height:1.5;">{{ s.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section data-screen-label="Testimonios" style="padding:80px 32px;background:#FFF4E5;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:44px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">CLIENTES FELICES</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">Nos dicen cosas hermosas 💖</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+        <sc-for list="{{ testimonios }}" as="t" hint-placeholder-count="3">
+          <div style="background:#fff;padding:30px;border-radius:28px;box-shadow:0 6px 20px rgba(107,58,30,.06);position:relative;transition:all .3s;" style-hover="{transform:'translateY(-6px)'}">
+            <div style="font-size:38px;color:#F7A6B8;line-height:1;font-family:Georgia,serif;">"</div>
+            <p style="font-size:15px;color:#6B3A1E;line-height:1.6;margin:8px 0 20px;font-style:italic;">{{ t.text }}</p>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,{{ t.avatar1 }},{{ t.avatar2 }});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Fredoka';">{{ t.initial }}</div>
+              <div>
+                <div style="font-weight:800;color:#6B3A1E;font-size:14px;">{{ t.name }}</div>
+                <div style="font-size:12px;color:#D99A4E;">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section data-screen-label="FAQ" style="padding:80px 32px;background:#FFFDF8;">
+    <div style="max-width:820px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:44px;">
+        <div style="font-size:13px;font-weight:700;color:#D99A4E;letter-spacing:2px;margin-bottom:8px;">FAQ</div>
+        <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:44px;color:#6B3A1E;">Preguntas frecuentes</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+          <button onClick="{{ f.toggle }}" style="text-align:left;background:{{ f.bg }};border:2px solid {{ f.border }};padding:22px 26px;border-radius:22px;cursor:pointer;font-family:inherit;transition:all .25s;" style-hover="{borderColor:'#F7A6B8'}">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;">
+              <span style="font-family:'Fredoka';font-weight:600;font-size:17px;color:#6B3A1E;">{{ f.q }}</span>
+              <span style="width:34px;height:34px;border-radius:50%;background:#F7A6B8;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .3s;transform:{{ f.iconTransform }};">+</span>
+            </div>
+            <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:14px;font-size:15px;color:#8a6a55;line-height:1.6;">{{ f.a }}</div>
+            </sc-if>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section style="padding:70px 32px;background:linear-gradient(135deg,#F7A6B8,#f28ea3);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:20px;left:5%;font-size:60px;opacity:.25;animation:float-cookie 6s ease-in-out infinite;">🍪</div>
+    <div style="position:absolute;bottom:20px;right:8%;font-size:52px;opacity:.25;animation:float-cookie-alt 5s ease-in-out infinite;">🧁</div>
+    <div style="position:absolute;top:40%;right:20%;font-size:36px;opacity:.3;animation:float-heart 4s ease-in-out infinite;">💗</div>
+    <div style="max-width:820px;margin:0 auto;text-align:center;position:relative;">
+      <h2 style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:48px;color:#fff;margin-bottom:14px;line-height:1.1;">¿Listo para tu antojo más cute?</h2>
+      <p style="font-size:19px;color:#FFF4E5;margin-bottom:28px;">Pedí fácil por WhatsApp y recibí tu pedido hecho con amor.</p>
+      <a href="{{ waHref }}" target="_blank" style="display:inline-flex;align-items:center;gap:12px;background:#fff;color:#6B3A1E;padding:20px 40px;border-radius:999px;text-decoration:none;font-weight:800;font-size:18px;box-shadow:0 14px 30px rgba(0,0,0,.15);transition:all .2s;" style-hover="{transform:'translateY(-3px) scale(1.02)'}">
+        💬 Pedir por WhatsApp ahora
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer data-screen-label="Footer" style="padding:60px 32px 30px;background:#6B3A1E;color:#FFF4E5;">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <img src="assets/logo.png" style="width:52px;height:52px;border-radius:50%;"/>
+          <div style="font-family:'Fredoka';font-weight:700;font-size:22px;color:#fff;">Cookie Store</div>
+        </div>
+        <p style="font-size:14px;line-height:1.6;color:#FFE1E8;opacity:.85;">Repostería artesanal, dulce y hecha con amor. Cookies, cupcakes, tortas y postres personalizados.</p>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <sc-for list="{{ socials }}" as="s" hint-placeholder-count="4">
+            <a href="{{ s.href }}" target="_blank" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;" style-hover="{background:'#F7A6B8',transform:'translateY(-3px)'}">{{ s.icon }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Fredoka';font-weight:600;font-size:17px;color:#fff;margin-bottom:14px;">Menú</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Inicio</a>
+          <a href="#productos" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Productos</a>
+          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Combos</a>
+          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Personalizados</a>
+          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Nosotros</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Fredoka';font-weight:600;font-size:17px;color:#fff;margin-bottom:14px;">Contacto</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#FFE1E8;opacity:.85;">
+          <div>💬 WhatsApp<br/><span style="opacity:.75;">+595 981 234 567</span></div>
+          <div>📍 Zona de entrega<br/><span style="opacity:.75;">Asunción y alrededores</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Fredoka';font-weight:600;font-size:17px;color:#fff;margin-bottom:14px;">Horarios</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#FFE1E8;opacity:.85;">
+          <div>Lun a Vie: 9:00 – 19:00</div>
+          <div>Sábados: 9:00 – 17:00</div>
+          <div>Domingos: cerrado 💤</div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
+      <div style="font-size:13px;color:#FFE1E8;opacity:.7;">© 2026 Cookie Store · Todos los derechos reservados</div>
+      <div style="font-family:'Fredoka';font-weight:600;font-size:16px;color:#F7A6B8;">Dulzura en cada bocado 🍪💕</div>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCart }}" style="position:fixed;inset:0;background:rgba(107,58,30,.4);backdrop-filter:blur(4px);z-index:200;animation:rise .3s ease;"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100vw;background:#FFFDF8;z-index:201;box-shadow:-20px 0 60px rgba(107,58,30,.2);display:flex;flex-direction:column;animation:bounce-in .35s ease;">
+      <div style="padding:24px 28px;border-bottom:2px solid #FFE1E8;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-family:'Fredoka';font-weight:600;font-size:24px;color:#6B3A1E;">Tu carrito 🛒</div>
+          <div style="font-size:13px;color:#8a6a55;">{{ cartCount }} producto(s)</div>
+        </div>
+        <button onClick="{{ closeCart }}" style="width:40px;height:40px;border-radius:50%;background:#FFE1E8;border:none;cursor:pointer;font-size:20px;color:#6B3A1E;" style-hover="{background:'#F7A6B8',color:'#fff'}">✕</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px 28px;">
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:80px;margin-bottom:12px;">🍪</div>
+            <div style="font-family:'Fredoka';font-weight:600;font-size:20px;color:#6B3A1E;margin-bottom:6px;">Carrito vacío</div>
+            <div style="font-size:14px;color:#8a6a55;">Agregá tus antojos favoritos 💕</div>
+          </div>
+        </sc-if>
+        <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="0">
+          <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed #FFE1E8;align-items:center;">
+            <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,{{ item.bg1 }},{{ item.bg2 }});display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;">{{ item.emoji }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:'Fredoka';font-weight:600;font-size:15px;color:#6B3A1E;">{{ item.name }}</div>
+              <div style="font-size:13px;color:#F7A6B8;font-weight:800;">Gs. {{ item.price }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:#FFF4E5;border-radius:999px;padding:4px;">
+              <button onClick="{{ item.dec }}" style="width:26px;height:26px;border-radius:50%;background:#fff;border:none;cursor:pointer;font-weight:800;color:#6B3A1E;">−</button>
+              <span style="min-width:20px;text-align:center;font-weight:800;color:#6B3A1E;font-size:14px;">{{ item.qty }}</span>
+              <button onClick="{{ item.inc }}" style="width:26px;height:26px;border-radius:50%;background:#F7A6B8;border:none;cursor:pointer;font-weight:800;color:#fff;">+</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ cartCount }}" hint-placeholder-val="{{ 0 }}">
+        <div style="padding:20px 28px;border-top:2px solid #FFE1E8;background:#fff;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+            <span style="font-size:15px;color:#8a6a55;font-weight:700;">Total</span>
+            <span style="font-family:'Fredoka';font-weight:700;font-size:24px;color:#6B3A1E;">Gs. {{ cartTotal }}</span>
+          </div>
+          <a href="{{ cartWaHref }}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:16px;border-radius:16px;text-decoration:none;font-weight:800;font-size:15px;box-shadow:0 8px 20px rgba(37,211,102,.35);transition:all .2s;" style-hover="{transform:'translateY(-2px)'}">
+            💬 Enviar pedido por WhatsApp
+          </a>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- Toast -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ '' }}">
+    <div style="position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#6B3A1E;color:#fff;padding:14px 24px;border-radius:999px;font-weight:700;font-size:14px;z-index:300;box-shadow:0 12px 30px rgba(107,58,30,.4);animation:pop-in .35s ease;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">🍪</span> {{ toast }}
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    cart: {}, cartOpen: false, toast: '', filter: 'Todos', openFaq: null
+  };
+
+  PRODUCTS = [
+    { id: 'p1', name: 'Choco Chip Classic', desc: 'La clásica cookie con chispas de chocolate', price: '25.000', rating: '4.9', emoji: '🍪', cat: 'Cookies', badge: 'Más vendido', badgeBg: '#F7A6B8', bg1: '#FFF4E5', bg2: '#FFE1E8' },
+    { id: 'p2', name: 'Cupcake Rosita', desc: 'Cupcake de vainilla con frosting rosa', price: '18.000', rating: '4.8', emoji: '🧁', cat: 'Cupcakes', badge: 'Cute', badgeBg: '#D99A4E', bg1: '#FFE1E8', bg2: '#FFF4E5' },
+    { id: 'p3', name: 'Brownie Fudge', desc: 'Brownie húmedo con doble chocolate', price: '22.000', rating: '5.0', emoji: '🍫', cat: 'Brownies', badge: 'Nuevo', badgeBg: '#6B3A1E', bg1: '#FFF4E5', bg2: '#F7A6B8' },
+    { id: 'p4', name: 'Torta Confetti', desc: 'Torta esponjosa con sprinkles y crema', price: '95.000', rating: '4.9', emoji: '🎂', cat: 'Tortas', badge: 'Especial', badgeBg: '#F7A6B8', bg1: '#FFE1E8', bg2: '#FFF4E5' },
+    { id: 'p5', name: 'Cookie Red Velvet', desc: 'Roja, tierna y con chispas blancas', price: '28.000', rating: '4.9', emoji: '🍪', cat: 'Cookies', badge: '', badgeBg: '', bg1: '#FFE1E8', bg2: '#FFF4E5' },
+    { id: 'p6', name: 'Donut Sprinkles', desc: 'Donut glaseada con sprinkles de colores', price: '15.000', rating: '4.7', emoji: '🍩', cat: 'Cookies', badge: '', badgeBg: '', bg1: '#FFF4E5', bg2: '#FFE1E8' },
+    { id: 'p7', name: 'Cupcake Chocolate', desc: 'Cupcake de chocolate con ganache', price: '20.000', rating: '4.8', emoji: '🧁', cat: 'Cupcakes', badge: '', badgeBg: '', bg1: '#FFF4E5', bg2: '#F7A6B8' },
+    { id: 'p8', name: 'Cake Pops Corazón', desc: 'Bocaditos dulces con forma de corazón', price: '35.000', rating: '5.0', emoji: '🍡', cat: 'Personalizados', badge: 'Amor', badgeBg: '#F7A6B8', bg1: '#FFE1E8', bg2: '#FFF4E5' },
+  ];
+
+  COMBOS = [
+    { id: 'c1', name: 'Combo Amigas', desc: '12 cookies variadas + 4 cupcakes mini', price: '95.000', emoji: '🍪', bg: '#FFE1E8', accent: '#F7A6B8' },
+    { id: 'c2', name: 'Box Cumpleaños', desc: 'Torta personalizada + 6 cupcakes + tarjeta', price: '180.000', emoji: '🎂', bg: '#FFF4E5', accent: '#D99A4E' },
+    { id: 'c3', name: 'Box San Valentín', desc: 'Cookies de corazón + cake pops + rosas', price: '120.000', emoji: '💗', bg: '#FFE1E8', accent: '#F7A6B8' },
+    { id: 'c4', name: 'Pack Dulce Antojo', desc: 'Brownies + cookies + chocolatinos', price: '75.000', emoji: '🍫', bg: '#FFF4E5', accent: '#6B3A1E' },
+  ];
+
+  CATEGORIES = [
+    { name: 'Cookies', emoji: '🍪', bg: '#FFE1E8' },
+    { name: 'Cupcakes', emoji: '🧁', bg: '#FFF4E5' },
+    { name: 'Tortas', emoji: '🎂', bg: '#FFE1E8' },
+    { name: 'Brownies', emoji: '🍫', bg: '#FFF4E5' },
+    { name: 'Combos', emoji: '🎁', bg: '#FFE1E8' },
+    { name: 'Personalizados', emoji: '✨', bg: '#FFF4E5' },
+  ];
+
+  waNumber = '595981234567';
+
+  makeWaHref(text) {
+    return `https://wa.me/${this.waNumber}?text=${encodeURIComponent(text)}`;
+  }
+
+  addToCart(item) {
+    const cart = { ...this.state.cart };
+    cart[item.id] = { ...item, qty: (cart[item.id]?.qty || 0) + 1 };
+    this.setState({ cart, toast: `¡${item.name} agregada!` });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 1800);
+  }
+  incQty(id) {
+    const cart = { ...this.state.cart };
+    if (cart[id]) { cart[id] = { ...cart[id], qty: cart[id].qty + 1 }; this.setState({ cart }); }
+  }
+  decQty(id) {
+    const cart = { ...this.state.cart };
+    if (cart[id]) {
+      cart[id] = { ...cart[id], qty: cart[id].qty - 1 };
+      if (cart[id].qty <= 0) delete cart[id];
+      this.setState({ cart });
+    }
+  }
+
+  renderVals() {
+    const cart = this.state.cart;
+    const cartArr = Object.values(cart);
+    const cartCount = cartArr.reduce((s, i) => s + i.qty, 0);
+    const parsePrice = s => parseInt(String(s).replace(/\./g, ''), 10) || 0;
+    const total = cartArr.reduce((s, i) => s + parsePrice(i.price) * i.qty, 0);
+    const totalStr = total.toLocaleString('es-PY');
+    const cartText = cartArr.length
+      ? `¡Hola Cookie Store! 🍪 Quiero pedir:\n\n${cartArr.map(i => `• ${i.qty}× ${i.name} — Gs. ${i.price}`).join('\n')}\n\nTotal: Gs. ${totalStr}\n\n¡Gracias! 💕`
+      : '';
+
+    const filter = this.state.filter;
+    const filtered = filter === 'Todos' ? this.PRODUCTS : this.PRODUCTS.filter(p => p.cat === filter);
+
+    const filterOptions = ['Todos', 'Cookies', 'Cupcakes', 'Brownies', 'Tortas', 'Personalizados'];
+
+    return {
+      navItems: [
+        { label: 'Inicio', href: '#top' },
+        { label: 'Productos', href: '#productos' },
+        { label: 'Combos', href: '#productos' },
+        { label: 'Personalizados', href: '#productos' },
+        { label: 'Nosotros', href: '#productos' },
+        { label: 'Contacto', href: '#productos' },
+      ],
+      cartCount,
+      cartEmpty: cartArr.length === 0,
+      cartOpen: this.state.cartOpen,
+      cartItems: cartArr.map(i => ({
+        ...i,
+        inc: () => this.incQty(i.id),
+        dec: () => this.decQty(i.id),
+      })),
+      cartTotal: totalStr,
+      cartWaHref: this.makeWaHref(cartText),
+      waHref: this.makeWaHref('¡Hola Cookie Store! 🍪 Quiero hacer un pedido 💕'),
+      waCustomHref: this.makeWaHref('¡Hola Cookie Store! ✨ Quiero personalizar un pedido para una ocasión especial'),
+      openCart: () => this.setState({ cartOpen: true }),
+      closeCart: () => this.setState({ cartOpen: false }),
+      toast: this.state.toast,
+      categories: this.CATEGORIES.map(c => ({ ...c, select: () => this.setState({ filter: c.name === 'Combos' ? 'Todos' : c.name }) })),
+      filterChips: filterOptions.map(name => ({
+        name,
+        select: () => this.setState({ filter: name }),
+        bgColor: filter === name ? '#F7A6B8' : '#fff',
+        textColor: filter === name ? '#fff' : '#6B3A1E',
+        borderColor: filter === name ? '#F7A6B8' : '#FFE1E8',
+      })),
+      filteredProducts: filtered.map(p => ({
+        ...p,
+        addToCart: () => this.addToCart(p),
+        waHref: this.makeWaHref(`¡Hola! Quiero pedir "${p.name}" (Gs. ${p.price}) 🍪`),
+      })),
+      combos: this.COMBOS.map(c => ({
+        ...c,
+        addToCart: () => this.addToCart({ id: c.id, name: c.name, price: c.price, emoji: c.emoji, bg1: c.bg, bg2: '#FFF4E5' }),
+      })),
+      personalizadoFeatures: [
+        { icon: '🎂', label: 'Tortas temáticas' },
+        { icon: '🎁', label: 'Cajas de regalo' },
+        { icon: '💌', label: 'Mensaje personal' },
+        { icon: '🎀', label: 'Decoración a elegir' },
+      ],
+      valores: [
+        { icon: '💗', label: 'Con amor' },
+        { icon: '🌿', label: 'Ingredientes frescos' },
+        { icon: '✨', label: 'Artesanal' },
+        { icon: '🎨', label: 'Creativo' },
+      ],
+      pasos: [
+        { n: '1', icon: '🍪', title: 'Elegí tu producto', desc: 'Navegá el catálogo y elegí tus favoritos', bg: '#FFE1E8', delay: '0s' },
+        { n: '2', icon: '🛒', title: 'Agregá al carrito', desc: 'Sumá todo lo que quieras probar', bg: '#FFF4E5', delay: '.3s' },
+        { n: '3', icon: '💬', title: 'Confirmá el pedido', desc: 'Envianos tu pedido por WhatsApp', bg: '#FFE1E8', delay: '.6s' },
+        { n: '4', icon: '📦', title: 'Recibí o retirá', desc: 'Delivery en Asunción o pasá a retirar', bg: '#FFF4E5', delay: '.9s' },
+      ],
+      testimonios: [
+        { text: 'Las cookies más ricas que probé, hermosas y deliciosas. ¡Ya son mi antojo favorito!', name: 'Camila R.', initial: 'C', avatar1: '#F7A6B8', avatar2: '#D99A4E' },
+        { text: 'Pedí un box para el cumple de mi hermana y quedó espectacular. Súper cute y muy rico todo.', name: 'Sofía M.', initial: 'S', avatar1: '#D99A4E', avatar2: '#F7A6B8' },
+        { text: 'La atención es divina, los brownies increíbles. Recomiendo Cookie Store al 100%.', name: 'Lucía P.', initial: 'L', avatar1: '#F7A6B8', avatar2: '#6B3A1E' },
+      ],
+      faqs: [
+        { q: '¿Hacen pedidos personalizados?', a: '¡Sí! Podés personalizar sabores, colores, formas y mensajes. Escribinos por WhatsApp con tu idea 💕' },
+        { q: '¿Con cuánta anticipación debo pedir?', a: 'Recomendamos al menos 48 horas de anticipación. Para pedidos grandes o eventos, con 5 días de aviso.' },
+        { q: '¿Tienen delivery?', a: 'Sí, hacemos delivery en Asunción y ciudades cercanas. También podés retirar en el local.' },
+        { q: '¿Puedo pedir por WhatsApp?', a: '¡Claro! Nuestro canal principal es WhatsApp. Es rápido, fácil y súper cercano.' },
+        { q: '¿Qué medios de pago aceptan?', a: 'Efectivo, transferencia bancaria y Tigo Money / Personal Pay. Consultanos por otros medios.' },
+      ].map((f, idx) => ({
+        ...f,
+        open: this.state.openFaq === idx,
+        toggle: () => this.setState({ openFaq: this.state.openFaq === idx ? null : idx }),
+        bg: this.state.openFaq === idx ? '#FFE1E8' : '#fff',
+        border: this.state.openFaq === idx ? '#F7A6B8' : '#FFE1E8',
+        iconTransform: this.state.openFaq === idx ? 'rotate(45deg)' : 'rotate(0deg)',
+      })),
+      socials: [
+        { icon: '📷', href: '#' },
+        { icon: '📘', href: '#' },
+        { icon: '🎵', href: '#' },
+        { icon: '💬', href: this.makeWaHref('¡Hola Cookie Store! 🍪') },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
