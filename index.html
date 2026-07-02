@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
   body { font-family: 'Nunito', sans-serif; background: #FFFDF8; color: #6B3A1E; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   @keyframes float-cookie { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-24px) rotate(8deg); } }
   @keyframes float-cookie-alt { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(-10deg); } }
@@ -178,7 +178,7 @@
   </section>
 
   <!-- COMBOS -->
-  <section data-screen-label="Combos" style="padding:80px 32px;background:#FFE1E8;position:relative;overflow:hidden;">
+  <section id="combos" data-screen-label="Combos" style="padding:80px 32px;background:#FFE1E8;position:relative;overflow:hidden;">
     <div style="position:absolute;top:20px;left:8%;font-size:32px;opacity:.3;animation:float-heart 5s ease-in-out infinite;">💗</div>
     <div style="position:absolute;bottom:30px;right:10%;font-size:38px;opacity:.3;animation:float-heart 6s ease-in-out infinite 1s;">💕</div>
     <div style="max-width:1200px;margin:0 auto;position:relative;">
@@ -202,7 +202,7 @@
   </section>
 
   <!-- PERSONALIZADOS -->
-  <section data-screen-label="Personalizados" style="padding:80px 32px;background:#FFFDF8;">
+  <section id="personalizados" data-screen-label="Personalizados" style="padding:80px 32px;background:#FFFDF8;">
     <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
       <div style="position:relative;height:440px;border-radius:36px;background:linear-gradient(135deg,#FFE1E8,#FFF4E5);display:flex;align-items:center;justify-content:center;overflow:hidden;">
         <div style="font-size:180px;animation:float-cookie 6s ease-in-out infinite;">🎂</div>
@@ -235,7 +235,7 @@
   </section>
 
   <!-- SOBRE NOSOTROS -->
-  <section data-screen-label="Sobre" style="padding:80px 32px;background:linear-gradient(180deg,#FFFDF8 0%,#FFF4E5 100%);position:relative;overflow:hidden;">
+  <section id="nosotros" data-screen-label="Sobre" style="padding:80px 32px;background:linear-gradient(180deg,#FFFDF8 0%,#FFF4E5 100%);position:relative;overflow:hidden;">
     <div style="position:absolute;top:40px;left:5%;font-size:38px;opacity:.3;animation:float-cookie 6s ease-in-out infinite;">🍪</div>
     <div style="position:absolute;bottom:40px;right:8%;font-size:44px;opacity:.3;animation:float-cookie-alt 7s ease-in-out infinite;">🧁</div>
     <div style="max-width:820px;margin:0 auto;text-align:center;position:relative;">
@@ -341,7 +341,7 @@
   </section>
 
   <!-- FOOTER -->
-  <footer data-screen-label="Footer" style="padding:60px 32px 30px;background:#6B3A1E;color:#FFF4E5;">
+  <footer id="contacto" data-screen-label="Footer" style="padding:60px 32px 30px;background:#6B3A1E;color:#FFF4E5;">
     <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;">
       <div>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -360,9 +360,9 @@
         <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
           <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Inicio</a>
           <a href="#productos" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Productos</a>
-          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Combos</a>
-          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Personalizados</a>
-          <a href="#top" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Nosotros</a>
+          <a href="#combos" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Combos</a>
+          <a href="#personalizados" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Personalizados</a>
+          <a href="#nosotros" style="color:#FFE1E8;text-decoration:none;opacity:.85;" style-hover="{opacity:1,color:'#F7A6B8'}">Nosotros</a>
         </div>
       </div>
       <div>
@@ -523,10 +523,10 @@ class Component extends DCLogic {
       navItems: [
         { label: 'Inicio', href: '#top' },
         { label: 'Productos', href: '#productos' },
-        { label: 'Combos', href: '#productos' },
-        { label: 'Personalizados', href: '#productos' },
-        { label: 'Nosotros', href: '#productos' },
-        { label: 'Contacto', href: '#productos' },
+        { label: 'Combos', href: '#combos' },
+        { label: 'Personalizados', href: '#personalizados' },
+        { label: 'Nosotros', href: '#nosotros' },
+        { label: 'Contacto', href: '#contacto' },
       ],
       cartCount,
       cartEmpty: cartArr.length === 0,
